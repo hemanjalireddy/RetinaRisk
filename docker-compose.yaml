@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .             
+      dockerfile: backend/Dockerfile
+    container_name: retina_backend
+    command: uvicorn backend.src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app/backend 
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: .             
+      dockerfile: frontend/Dockerfile
+    container_name: retina_frontend
+    command: streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
